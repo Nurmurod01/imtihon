@@ -1,0 +1,13 @@
+export { default as Logo } from "./Logo.png";
+export { default as Hero } from "./Hero.png";
+export { default as Dining } from "./dining.png";
+export { default as Living } from "./living.png";
+export { default as Bedroom } from "./bedroom.png";
+export { default as Respira } from "./Respira.png";
+export { default as InnerPlace } from "./innerplace.png";
+export { default as BgNavi } from "./bg-navi.png";
+export { default as Quality } from "./quality.png";
+export { default as Guarantee } from "./guarantee.png";
+export { default as Shipping } from "./shipping.png";
+export { default as Support } from "./support.png";
+export { default as Detail } from "./detail.png";
