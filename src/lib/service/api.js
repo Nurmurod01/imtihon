@@ -1,66 +1,65 @@
 "use client";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const getToken = () => {
-  if (typeof window !== "undefined") {
-    return localStorage.getItem("token");
-  }
-  return null;
-};
-
 const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:3004",
+    baseUrl: "http://localhost:3004/",
     credentials: "include",
-    mode: "cors",
     prepareHeaders: (headers) => {
-      const token = getToken();
+      headers.set("Content-Type", "application/json");
+      const token = localStorage.getItem("token");
       if (token) {
-        headers.set("Authorization", `Token ${token}`);
+        headers.set("Authorization", `Bearer ${token}`);
       }
       return headers;
     },
   }),
-  tagTypes: ["Products", "Categories", "Articles", "Users", "Orders"],
+  tagTypes: [
+    "Users",
+    "Categories",
+    "Products",
+    "Orders",
+    "OrderItems",
+    "CartItems",
+    "Payments",
+  ],
   endpoints: (builder) => ({
-    // Products
-    getProducts: builder.query({
-      query: () => "/products/",
-      providesTags: ["Products"],
+    // USERS
+    getUsers: builder.query({ query: () => "/users", providesTags: ["Users"] }),
+    getOneUsers: builder.query({
+      query: (id) => `/users/${id}`,
+      providesTags: ["Users"],
     }),
-    addProduct: builder.mutation({
-      query: (product) => ({
-        url: "/products/",
-        method: "POST",
-        body: product,
-      }),
-      invalidatesTags: ["Products"],
+    addUser: builder.mutation({
+      query: (user) => ({ url: "/users", method: "POST", body: user }),
+      invalidatesTags: ["Users"],
     }),
-    updateProduct: builder.mutation({
-      query: ({ id, ...product }) => ({
-        url: `/products/${id}/`,
-        method: "PUT",
-        body: product,
+    updateUser: builder.mutation({
+      query: ({ id, ...user }) => ({
+        url: `/users/${id}`,
+        method: "PATCH",
+        body: user,
       }),
-      invalidatesTags: ["Products"],
+      invalidatesTags: ["Users"],
     }),
-    deleteProduct: builder.mutation({
-      query: (id) => ({
-        url: `/products/${id}/`,
-        method: "DELETE",
-      }),
-      invalidatesTags: ["Products"],
+    deleteUser: builder.mutation({
+      query: (id) => ({ url: `/users/${id}`, method: "DELETE" }),
+      invalidatesTags: ["Users"],
     }),
 
-    // Categories
+    // CATEGORIES
     getCategories: builder.query({
-      query: () => "/categories/",
+      query: () => "/categories",
+      providesTags: ["Categories"],
+    }),
+    getOneCategory: builder.query({
+      query: (id) => `/categories/${id}`,
       providesTags: ["Categories"],
     }),
     addCategory: builder.mutation({
       query: (category) => ({
-        url: "/categories/",
+        url: "/categories",
         method: "POST",
         body: category,
       }),
@@ -68,184 +67,165 @@ const api = createApi({
     }),
     updateCategory: builder.mutation({
       query: ({ id, ...category }) => ({
-        url: `/categories/${id}/`,
-        method: "PUT",
+        url: `/categories/${id}`,
+        method: "PATCH",
         body: category,
       }),
       invalidatesTags: ["Categories"],
     }),
     deleteCategory: builder.mutation({
-      query: (id) => ({
-        url: `/categories/${id}/`,
-        method: "DELETE",
-      }),
+      query: (id) => ({ url: `/categories/${id}`, method: "DELETE" }),
       invalidatesTags: ["Categories"],
     }),
 
-    // Articles
-    getArticles: builder.query({
-      query: () => "/articles/",
-      providesTags: ["Articles"],
+    // PRODUCTS
+    getProducts: builder.query({
+      query: () => "/products",
+      providesTags: ["Products"],
     }),
-    addArticle: builder.mutation({
-      query: (article) => ({
-        url: "/articles/",
-        method: "POST",
-        body: article,
-      }),
-      invalidatesTags: ["Articles"],
+    getOneProduct: builder.query({
+      query: (id) => `/products/${id}`,
+      providesTags: ["Products"],
     }),
-    updateArticle: builder.mutation({
-      query: ({ id, ...article }) => ({
-        url: `/articles/${id}/`,
-        method: "PUT",
-        body: article,
-      }),
-      invalidatesTags: ["Articles"],
+    addProduct: builder.mutation({
+      query: (product) => ({ url: "/products", method: "POST", body: product }),
+      invalidatesTags: ["Products"],
     }),
-    deleteArticle: builder.mutation({
-      query: (id) => ({
-        url: `/articles/${id}/`,
-        method: "DELETE",
+    updateProduct: builder.mutation({
+      query: ({ id, ...product }) => ({
+        url: `/products/${id}`,
+        method: "PATCH",
+        body: product,
       }),
-      invalidatesTags: ["Articles"],
+      invalidatesTags: ["Products"],
+    }),
+    deleteProduct: builder.mutation({
+      query: (id) => ({ url: `/products/${id}`, method: "DELETE" }),
+      invalidatesTags: ["Products"],
     }),
 
-    // Users
-    getUsers: builder.query({
-      query: () => ({
-        url: "/users/",
-        headers: getToken() ? { Authorization: `Token ${getToken()}` } : {},
-      }),
-      providesTags: ["Users"],
-    }),
-    addUser: builder.mutation({
-      query: (user) => ({
-        url: "/users/",
-        method: "POST",
-        body: user,
-      }),
-      invalidatesTags: ["Users"],
-    }),
-    updateUser: builder.mutation({
-      query: ({ id, ...user }) => ({
-        url: `/users/${id}/`,
-        method: "PUT",
-        body: user,
-      }),
-      invalidatesTags: ["Users"],
-    }),
-    deleteUser: builder.mutation({
-      query: (id) => ({
-        url: `/users/${id}/`,
-        method: "DELETE",
-      }),
-      invalidatesTags: ["Users"],
-    }),
-
-    // Orders
-    getOrders: builder.query({
-      query: () => ({
-        url: "/orders/",
-        headers: getToken() ? { Authorization: `Token ${getToken()}` } : {},
-      }),
+    // ORDERS
+    getOneOrders: builder.query({
+      query: (id) => `/orders/${id}`,
       providesTags: ["Orders"],
     }),
     addOrder: builder.mutation({
-      query: (order) => ({
-        url: "/orders/",
-        method: "POST",
-        body: order,
-      }),
+      query: (order) => ({ url: "/orders", method: "POST", body: order }),
       invalidatesTags: ["Orders"],
     }),
     updateOrder: builder.mutation({
       query: ({ id, ...order }) => ({
-        url: `/orders/${id}/`,
-        method: "PUT",
+        url: `/orders/${id}`,
+        method: "PATCH",
         body: order,
       }),
       invalidatesTags: ["Orders"],
     }),
     deleteOrder: builder.mutation({
-      query: (id) => ({
-        url: `/orders/${id}/`,
-        method: "DELETE",
-      }),
+      query: (id) => ({ url: `/orders/${id}`, method: "DELETE" }),
       invalidatesTags: ["Orders"],
     }),
 
-    getArticles: builder.query({
-      query: () => "/articles/",
+    // ORDER ITEMS
+    getOrderItems: builder.query({
+      query: () => "/order-items",
+      providesTags: ["OrderItems"],
     }),
-    getProducts: builder.query({
-      query: () => "/products/",
-    }),
-    getCategories: builder.query({
-      query: () => "/categories/",
-    }),
-    getUsers: builder.query({
-      query: () => ({
-        url: "/users/",
-        headers: token ? { Authorization: `Token ${token}` } : {},
+    addOrderItem: builder.mutation({
+      query: (orderItem) => ({
+        url: "/order-items",
+        method: "POST",
+        body: orderItem,
       }),
+      invalidatesTags: ["OrderItems"],
     }),
-    getOrders: builder.query({
-      query: () => ({
-        url: "/orders/",
-        headers: token ? { Authorization: `Token ${token}` } : {},
+    updateOrderItem: builder.mutation({
+      query: ({ id, ...orderItem }) => ({
+        url: `/order-items/${id}`,
+        method: "PATCH",
+        body: orderItem,
       }),
+      invalidatesTags: ["OrderItems"],
+    }),
+    deleteOrderItem: builder.mutation({
+      query: (id) => ({ url: `/order-items/${id}`, method: "DELETE" }),
+      invalidatesTags: ["OrderItems"],
     }),
 
-    logIn: builder.mutation({
-      query: (data) => ({
-        url: "/auth/login/",
+    // CART ITEMS
+
+    getCartItems: builder.query({
+      query: (id) => `/cart-items/${id}`,
+      providesTags: ["CartItems"],
+    }),
+    addCartItem: builder.mutation({
+      query: (cartItem) => ({
+        url: "/cart-items",
         method: "POST",
-        body: data,
+        body: cartItem,
       }),
+      invalidatesTags: ["CartItems"],
+    }),
+    updateCartItem: builder.mutation({
+      query: ({ id, ...cartItem }) => ({
+        url: `/cart-items/${id}`,
+        method: "PATCH",
+        body: cartItem,
+      }),
+      invalidatesTags: ["CartItems"],
+    }),
+    deleteCartItem: builder.mutation({
+      query: (id) => ({ url: `/cart-items/${id}`, method: "DELETE" }),
+      invalidatesTags: ["CartItems"],
+    }),
+
+    // PAYMENTS
+    getPayments: builder.query({
+      query: () => "/payments",
+      providesTags: ["Payments"],
+    }),
+
+    // AUTH
+    logIn: builder.mutation({
+      query: (data) => ({ url: "/auth/login", method: "POST", body: data }),
     }),
     signUp: builder.mutation({
-      query: (data) => ({
-        url: "/auth/signup/",
-        method: "POST",
-        body: data.formData,
-      }),
+      query: (data) => ({ url: "/auth/register", method: "POST", body: data }),
     }),
   }),
 });
 
 export const {
-  // Products
-  useGetProductsQuery,
-  useAddProductMutation,
-  useUpdateProductMutation,
-  useDeleteProductMutation,
-
-  // Categories
-  useGetCategoriesQuery,
-  useAddCategoryMutation,
-  useUpdateCategoryMutation,
-  useDeleteCategoryMutation,
-
-  // Articles
-  useGetArticlesQuery,
-  useAddArticleMutation,
-  useUpdateArticleMutation,
-  useDeleteArticleMutation,
-
-  // Users
   useGetUsersQuery,
+  useGetOneUsersQuery,
   useAddUserMutation,
   useUpdateUserMutation,
   useDeleteUserMutation,
-
-  // Orders
-  useGetOrdersQuery,
+  useGetCategoriesQuery,
+  useGetOneCategoryQuery,
+  useAddCategoryMutation,
+  useUpdateCategoryMutation,
+  useDeleteCategoryMutation,
+  useGetProductsQuery,
+  useGetOneProductQuery,
+  useAddProductMutation,
+  useUpdateProductMutation,
+  useDeleteProductMutation,
+  useGetOneOrdersQuery,
   useAddOrderMutation,
   useUpdateOrderMutation,
   useDeleteOrderMutation,
-
-  // Auth
+  useGetOrderItemsQuery,
+  useAddOrderItemMutation,
+  useUpdateOrderItemMutation,
+  useDeleteOrderItemMutation,
+  useGetCartItemsQuery,
+  useAddCartItemMutation,
+  useUpdateCartItemMutation,
+  useDeleteCartItemMutation,
+  useGetPaymentsQuery,
   useLogInMutation,
   useSignUpMutation,
 } = api;
+
+export default api;

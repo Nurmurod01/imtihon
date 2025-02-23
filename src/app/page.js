@@ -10,7 +10,7 @@ export default function page() {
     <div className="">
       <HeroSection />
       <BrowseRange />
-      <ProductsSection />
+      <ProductsSection variant="home" />
       <Explore />
     </div>
   );

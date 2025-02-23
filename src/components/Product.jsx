@@ -1,23 +1,31 @@
+"use client";
+
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { products } from "../data";
 import ProductCard from "./ProductCard";
 import Link from "next/link";
+import { useGetProductsQuery } from "@/lib/service/api";
 
-export default function ProductsSection() {
+export default function ProductsSection({ variant }) {
+  const { data: products, isLoading, error } = useGetProductsQuery();
+  const latestProducts = products?.slice(variant === "home" ? -8 : -4) || [];
+
   return (
-    <section className="py-24">
-      <div className="px-4">
-        <h2 className="text-5xl font-bold text-center mb-12">Our Products</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+    <section className="py-16 sm:py-24" id="products">
+      <div className="px-4 sm:px-6 lg:px-8">
+        <h2 className="text-3xl sm:text-5xl font-bold text-center mb-8 sm:mb-12">
+          {variant === "home" ? "Our Products" : "Related Products"}
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {latestProducts.map((product, index) => (
+            <ProductCard key={product.id} product={product} index={index} />
           ))}
         </div>
-        <div className="text-center mt-8">
+        <div className="text-center mt-6 sm:mt-8">
           <Link href={"/shop"}>
             <Button
               variant="outline"
-              className="px-10 py-6 text-[#B88E2F] border-[#B88E2F] font-semibold hover:text-[#B88E2F]"
+              className="px-6 sm:px-10 py-4 sm:py-6 text-[#B88E2F] border-[#B88E2F] font-semibold hover:text-[#B88E2F]"
             >
               Show More
             </Button>

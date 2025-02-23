@@ -2,145 +2,111 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Star, Plus, Minus, Facebook, Linkedin, Twitter } from "lucide-react";
-import { Detail } from "@/images";
 import { useState } from "react";
+import {
+  useAddCartItemMutation,
+  useGetOneCategoryQuery,
+} from "@/lib/service/api";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-export default function ProductDetails() {
+export default function ProductDetails({ product }) {
   const [count, setCount] = useState(1);
-  const [activeSize, setActiveSize] = useState("L");
+  // const [activeSize, setActiveSize] = useState("L");
+  // const [activeColor, setActiveColor] = useState("bg-purple-500");
+  const userId = localStorage.getItem("userId");
+  const { data: category } = useGetOneCategoryQuery(product.categoryId);
+  const [addCartItem, { isLoading }] = useAddCartItemMutation();
 
   const increment = () => setCount(count + 1);
   const decrement = () => setCount(count > 1 ? count - 1 : 1);
-
   const handleChange = (e) => {
     const value = parseInt(e.target.value, 10);
     if (!isNaN(value) && value >= 1) {
       setCount(value);
     }
   };
-  const [activeColor, setActiveColor] = useState("bg-purple-500");
 
-  const colors = [
-    { bg: "bg-purple-500", ring: "ring-purple-500" },
-    { bg: "bg-black", ring: "ring-black" },
-    { bg: "bg-[#B88E2F]", ring: "ring-[#B88E2F]" },
-  ];
+  const handleAddToCart = async () => {
+    if (!userId) {
+      toast.error("You must be logged in to add items to the cart.");
+      return;
+    }
+
+    try {
+      await addCartItem({
+        userId,
+        productId: product.id,
+        quantity: count,
+      }).unwrap();
+
+      toast.success("Product added to cart!");
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      toast.error("There was an error adding to cart!");
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="relative aspect-square bg-[#F9F1E7]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+        <div className="relative w-full h-72 sm:h-96 md:h-[450px] bg-[#F9F1E7]">
           <Image
-            src={Detail}
-            alt="Asgaard sofa"
+            src={`http://localhost:3004/media/products/${product.imgUrl}`}
+            alt={product.name}
             fill
-            className="object-contain p-8"
+            className="object-contain p-6 sm:p-8 rounded-lg"
           />
         </div>
 
-        <div className="space-y-6">
-          <h1 className="text-4xl font-medium">Asgaard sofa</h1>
-
-          <div className="text-2xl text-gray-500">Rs. 250,000.00</div>
-
-          <div className="flex items-center gap-2">
-            <div className="flex">
-              {[1, 2, 3, 4].map((i) => (
-                <Star
-                  key={i}
-                  className="w-5 h-5 fill-yellow-400 text-yellow-400"
-                />
-              ))}
-              <Star
-                className="w-5 h-5 fill-yellow-400 text-yellow-400"
-                strokeWidth={0.5}
-              />
-            </div>
-            <span className="text-gray-500">5 Customer Review</span>
+        <div className="space-y-4 sm:space-y-6 py-3 sm:py-5">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-medium">
+            {product.name}
+          </h1>
+          <div className="text-xl sm:text-2xl text-gray-500">
+            {product.price} $
           </div>
-
-          <p className="text-gray-600">
-            Setting the bar as one of the loudest speakers in its class, the
-            Kilburn is a compact, stout-hearted hero with a well-balanced audio
-            which boasts a clear midrange and extended highs for a sound.
+          {product.isNew && (
+            <span className="text-xs sm:text-sm text-green-600 font-semibold pt-1 sm:pt-2">
+              New Arrival
+            </span>
+          )}
+          <p className="text-sm sm:text-base text-gray-600">
+            {product.description}
           </p>
 
-          <div className="space-y-2">
-            <div className="text-gray-600">Size</div>
-            <div className="flex gap-4">
-              {["L", "XL", "XS"].map((size) => (
-                <button
-                  key={size}
-                  onClick={() => setActiveSize(size)}
-                  className={`h-10 w-12 rounded border transition-colors ${
-                    activeSize === size
-                      ? "border-[#B88E2F] bg-[#B88E2F] text-white"
-                      : "border-gray-300 hover:border-[#B88E2F]"
-                  }`}
-                >
-                  {size}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <div className="text-gray-600">Color</div>
-            <div className="flex gap-4">
-              {colors.map((color, index) => (
-                <button
-                  key={index}
-                  onClick={() => setActiveColor(color.bg)}
-                  className={`h-8 w-8 rounded-full transition-all ${
-                    activeColor === color.bg
-                      ? `ring-2 ring-offset-2 ${color.ring}`
-                      : ""
-                  } ${color.bg}`}
-                ></button>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <div className="flex items-center border rounded">
-              <button className="p-3 hover:bg-gray-100">
-                <Minus className="w-4 h-4" onClick={decrement} />
+              <button
+                className="p-2 sm:p-3 hover:bg-gray-100"
+                onClick={decrement}
+              >
+                <Minus className="w-4 h-4" />
               </button>
               <input
                 type="number"
-                className="w-16 border-x text-center"
-                value="1"
+                className="w-12 sm:w-16 border-x text-center text-sm sm:text-base"
+                value={count}
                 onChange={handleChange}
               />
-              <button className="p-3 hover:bg-gray-100">
-                <Plus className="w-4 h-4" onClick={increment} />
+              <button
+                className="p-2 sm:p-3 hover:bg-gray-100"
+                onClick={increment}
+              >
+                <Plus className="w-4 h-4" />
               </button>
             </div>
-            <Button className="flex-1 bg-white text-black border text-lg py-5 hover:bg-gray-100 rounded-xl">
-              Add To Cart
+            <Button
+              onClick={handleAddToCart}
+              disabled={isLoading || !userId}
+              className="w-full sm:w-auto flex-1 bg-white text-black border text-base sm:text-lg py-3 sm:py-5 hover:bg-gray-100 rounded-lg sm:rounded-xl"
+            >
+              {isLoading
+                ? "Adding..."
+                : userId
+                ? "Add To Cart"
+                : "Login to Buy"}
             </Button>
-          </div>
-
-          <div className="space-y-2 pt-6 border-t">
-            <div className="flex gap-2">
-              <span className="text-gray-600 w-24">SKU</span>
-              <span>: SS001</span>
-            </div>
-            <div className="flex gap-2">
-              <span className="text-gray-600 w-24">Category</span>
-              <span>: Sofas</span>
-            </div>
-            <div className="flex gap-2">
-              <span className="text-gray-600 w-24">Tags</span>
-              <span>: Sofa, Chair, Home, Shop</span>
-            </div>
-            <div className="flex gap-2">
-              <span className="text-gray-600 w-24">Share</span>
-              <div className="flex gap-4">
-                <Facebook className="w-5 h-5" />
-                <Linkedin className="w-5 h-5" />
-                <Twitter className="w-5 h-5" />
-              </div>
-            </div>
           </div>
         </div>
       </div>

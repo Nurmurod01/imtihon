@@ -4,35 +4,38 @@ import React from "react";
 
 export default function Top() {
   return (
-    <div className="grid grid-cols-4 py-24 px-16 w-full justify-center items-center  bg-[#FAF3EA]">
-      <div className="flex gap-3 justify-center">
-        <Image src={Quality} width={60} height={60} alt="Sifat" />
-        <div>
-          <h1 className="font-semibold text-3xl">High Quality</h1>
-          <p className="text-xl text-[#898989] ">Crafted from top materials</p>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 py-12 sm:py-16 lg:py-24 px-6 sm:px-12 lg:px-16 w-full justify-center items-center bg-[#FAF3EA]">
+      {[
+        {
+          img: Quality,
+          title: "High Quality",
+          desc: "Crafted from top materials",
+        },
+        { img: Guarantee, title: "Warranty Protection", desc: "Over 2 years" },
+        { img: Shipping, title: "Free Shipping", desc: "Order over 150 $" },
+        { img: Support, title: "24 / 7 Support", desc: "Dedicated support" },
+      ].map((item, index) => (
+        <div
+          key={index}
+          className="flex gap-3 sm:gap-4 justify-center items-center"
+        >
+          <Image
+            src={item.img}
+            width={50}
+            height={50}
+            alt={item.title}
+            className="w-12 sm:w-14"
+          />
+          <div>
+            <h1 className="font-semibold text-xl sm:text-2xl lg:text-3xl">
+              {item.title}
+            </h1>
+            <p className="text-sm sm:text-base lg:text-xl text-[#898989]">
+              {item.desc}
+            </p>
+          </div>
         </div>
-      </div>
-      <div className="flex gap-3 justify-center">
-        <Image src={Guarantee} width={60} height={60} alt="Sifat" />
-        <div>
-          <h1 className="font-semibold text-3xl">Warranty Protection</h1>
-          <p className="text-xl text-[#898989] ">Over 2 years</p>
-        </div>
-      </div>
-      <div className="flex gap-3 justify-center">
-        <Image src={Shipping} width={60} height={60} alt="Sifat" />
-        <div>
-          <h1 className="font-semibold text-3xl">Free Shipping</h1>
-          <p className="text-xl text-[#898989] ">Order over 150 $</p>
-        </div>
-      </div>
-      <div className="flex gap-3 justify-center">
-        <Image src={Support} width={60} height={60} alt="Sifat" />
-        <div>
-          <h1 className="font-semibold text-3xl">24 / 7 Support</h1>
-          <p className="text-xl text-[#898989] ">Dedicated support</p>
-        </div>
-      </div>
+      ))}
     </div>
   );
 }
