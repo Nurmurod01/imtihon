@@ -1,38 +1,39 @@
 "use client";
 
-import { useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useLogInMutation } from "@/lib/service/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "react-toastify";
-import { useAuth } from "@/hooks/useAuth"; // useAuth hook'ini import qilish
+import { useDispatch } from "react-redux";
+import { login } from "@/lib/slices/authSlice";
 
 export default function LoginPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loginMutation] = useLogInMutation();
   const router = useRouter();
-  const [logIn] = useLogInMutation();
-  const { isLoggedIn, login, user } = useAuth(); // useAuth hook'idan foydalanish
-
-  useEffect(() => {
-    if (isLoggedIn && user) {
-      router.push("/");
-    }
-  }, [isLoggedIn, user, router]);
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData(e.target);
-    const email = formData.get("email");
-    const password = formData.get("password");
-
     try {
-      const result = await logIn({ email, password }).unwrap();
-      
-      login(result.accessToken); 
-      toast.success("Login successful!");
+      const result = await loginMutation({ email, password }).unwrap();
+      dispatch(
+        login({
+          user: result.user,
+          token: result.accessToken,
+          role: result.user.role,
+        })
+      );
+      toast.success("You have successfully logged in.");
+      router.push("/");
     } catch (error) {
-      toast.error(error.data?.message || "Login error occurred.");
+      console.log(error);
+      
+      toast.error("Login failed");
     }
   };
 
@@ -45,12 +46,19 @@ export default function LoginPage() {
         </p>
       </div>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <Input type="email" name="email" placeholder="Email" required />
+        <Input
+          type="email"
+          name="email"
+          placeholder="Email"
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
         <Input
           type="password"
           name="password"
           placeholder="Password"
           required
+          onChange={(e) => setPassword(e.target.value)}
         />
         <Button type="submit" className="w-full">
           Log in

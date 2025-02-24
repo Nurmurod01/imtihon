@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import {
   LogIn,
@@ -9,19 +9,37 @@ import {
   ShoppingCart,
   User,
   X,
+  Heart,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Logo } from "@/images";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/hooks/useAuth"; 
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "@/lib/slices/authSlice";
+import { setWishlist } from "@/lib/slices/wishlistSlice";
 
 export default function Navbar() {
-  const { isLoggedIn, logout } = useAuth(); 
+  const auth = useSelector((state) => state.auth);
+  const wishlist = useSelector((state) => state.wishlist);
+  const isAuthenticated = auth?.isAuthenticated || false;
+  const dispatch = useDispatch();
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  useEffect(() => {
+    const storedWishlist = localStorage.getItem("likes");
+    if (storedWishlist) {
+      dispatch(setWishlist(JSON.parse(storedWishlist)));
+    }
+  }, [dispatch]);
+
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    router.push("/");
+  };
 
   return (
     <div className="relative">
@@ -48,6 +66,14 @@ export default function Navbar() {
           >
             Shop
           </Link>
+          {isAuthenticated && (
+            <Link
+              href="/order"
+              className="font-medium hover:text-gray-600 transition-colors"
+            >
+              My Orders
+            </Link>
+          )}
           <Link
             href="/about"
             className="font-medium hover:text-gray-600 transition-colors"
@@ -64,15 +90,27 @@ export default function Navbar() {
           >
             <Search className="w-5 h-5 sm:w-6 sm:h-6" />
           </Button>
-          {isLoggedIn ? (
+          {isAuthenticated ? (
             <>
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => router.push("/profile")}
                 className="hidden sm:inline-flex"
               >
                 <User className="w-5 h-5 sm:w-6 sm:h-6" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => router.push("/wishlist")}
+                className="hidden relative sm:inline-flex"
+              >
+                <Heart className="w-5 h-5 sm:w-6 sm:h-6" />
+                {wishlist.items.length > 0 && (
+                  <span className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">
+                    {wishlist.items.length}
+                  </span>
+                )}
               </Button>
               <Button
                 variant="ghost"
@@ -85,7 +123,7 @@ export default function Navbar() {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={logout} 
+                onClick={handleLogout}
                 className="hidden sm:inline-flex"
               >
                 <LogOut className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -125,66 +163,72 @@ export default function Navbar() {
             <Link href="/shop" className="font-medium" onClick={toggleMenu}>
               Shop
             </Link>
+            {isAuthenticated && (
+              <Link href="/order" className="font-medium" onClick={toggleMenu}>
+                My Orders
+              </Link>
+            )}
             <Link href="/about" className="font-medium" onClick={toggleMenu}>
               About
             </Link>
-            <div className="grid grid-cols-2 gap-5">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => {
-                  router.push("/search");
-                  toggleMenu();
-                }}
-              >
-                <Search className="w-5 h-5" />
-              </Button>
-              {isLoggedIn ? (
-                <>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => {
-                      router.push("/profile");
-                      toggleMenu();
-                    }}
-                  >
-                    <User className="w-5 h-5" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => {
-                      router.push("/cart");
-                      toggleMenu();
-                    }}
-                  >
-                    <ShoppingCart className="w-5 h-5" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => {
-                      logout(); 
-                      toggleMenu();
-                    }}
-                  >
-                    <LogOut className="w-5 h-5" />
-                  </Button>
-                </>
-              ) : (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => {
+                router.push("/search");
+                toggleMenu();
+              }}
+            >
+              <Search className="w-5 h-5" />
+            </Button>
+            {isAuthenticated ? (
+              <>
+                <Button variant="ghost" size="icon">
+                  <User className="w-5 h-5" />
+                </Button>
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={() => {
-                    router.push("/auth/login");
+                    router.push("/wishlist");
                     toggleMenu();
                   }}
                 >
-                  <LogIn className="w-5 h-5" />
+                  <Heart className="w-5 h-5" />
                 </Button>
-              )}
-            </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => {
+                    router.push("/cart");
+                    toggleMenu();
+                  }}
+                >
+                  <ShoppingCart className="w-5 h-5" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => {
+                    handleLogout();
+                    toggleMenu();
+                  }}
+                >
+                  <LogOut className="w-5 h-5" />
+                </Button>
+              </>
+            ) : (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  router.push("/auth/login");
+                  toggleMenu();
+                }}
+              >
+                <LogIn className="w-5 h-5" />
+              </Button>
+            )}
           </nav>
         </div>
       )}

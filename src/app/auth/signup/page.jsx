@@ -8,24 +8,25 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useDispatch } from "react-redux";
 
 export default function SignupPage() {
-  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [signup] = useSignUpMutation();
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await signup({ name, email, password, role: "user" }).unwrap();
-      setTimeout(() => {
-        toast.success("Signup successful. Please log in.");
-        router.push("/auth/login");
-      }, 1000);
+      const result = await signup({ username, email, password }).unwrap();
+      dispatch(login(result));
+      toast.success("Signup successful");
+      router.push("/"); 
     } catch (error) {
-      toast.error(error.data?.message || "An error occurred during signup.");
+      toast.error("Sign up failed");
     }
   };
 
@@ -43,7 +44,7 @@ export default function SignupPage() {
             type="text"
             placeholder="Username"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => setUsername(e.target.value)}
             required
           />
         </div>

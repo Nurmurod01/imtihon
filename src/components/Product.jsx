@@ -5,10 +5,14 @@ import { Button } from "@/components/ui/button";
 import ProductCard from "./ProductCard";
 import Link from "next/link";
 import { useGetProductsQuery } from "@/lib/service/api";
+import { Loading } from "./Loading";
 
 export default function ProductsSection({ variant }) {
   const { data: products, isLoading, error } = useGetProductsQuery();
   const latestProducts = products?.slice(variant === "home" ? -8 : -4) || [];
+
+  if (isLoading) return <Loading />;
+  if (error) return <p>Error loading products</p>;
 
   return (
     <section className="py-16 sm:py-24" id="products">

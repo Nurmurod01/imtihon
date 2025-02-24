@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import StoreProvider from "./Storeprovider";
 import { ToastContainer } from "react-toastify";
+import AuthLoader from "@/components/AuthLoader";
 
 const poppins = Poppins({
   variable: "--font-poppins-sans",
@@ -24,6 +25,7 @@ export default function RootLayout({ children }) {
       >
         <StoreProvider>
           <ToastContainer />
+          <AuthLoader />
           <Navbar />
           <main className="flex-grow">{children}</main>
           <Footer />
