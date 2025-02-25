@@ -25,7 +25,6 @@ const api = createApi({
     "Payments",
   ],
   endpoints: (builder) => ({
-    // USERS
     getUsers: builder.query({ query: () => "/users", providesTags: ["Users"] }),
     getOneUsers: builder.query({
       query: (id) => `/users/${id}`,
@@ -48,7 +47,6 @@ const api = createApi({
       invalidatesTags: ["Users"],
     }),
 
-    // CATEGORIES
     getCategories: builder.query({
       query: () => "/categories",
       providesTags: ["Categories"],
@@ -78,7 +76,6 @@ const api = createApi({
       invalidatesTags: ["Categories"],
     }),
 
-    // PRODUCTS
     getProducts: builder.query({
       query: () => "/products",
       providesTags: ["Products"],
@@ -104,7 +101,6 @@ const api = createApi({
       invalidatesTags: ["Products"],
     }),
 
-    // ORDERS
     getOneOrders: builder.query({
       query: (id) => `/orders/${id}`,
       providesTags: ["Orders"],
@@ -126,7 +122,6 @@ const api = createApi({
       invalidatesTags: ["Orders"],
     }),
 
-    // ORDER ITEMS
     getOrderItems: builder.query({
       query: () => "/order-items",
       providesTags: ["OrderItems"],
@@ -151,8 +146,6 @@ const api = createApi({
       query: (id) => ({ url: `/order-items/${id}`, method: "DELETE" }),
       invalidatesTags: ["OrderItems"],
     }),
-
-    // CART ITEMS
 
     getCartItems: builder.query({
       query: (id) => `/cart-items/${id}`,
@@ -179,13 +172,11 @@ const api = createApi({
       invalidatesTags: ["CartItems"],
     }),
 
-    // PAYMENTS
     getPayments: builder.query({
       query: () => "/payments",
       providesTags: ["Payments"],
     }),
 
-    // AUTH
     logIn: builder.mutation({
       query: (data) => ({ url: "/auth/login", method: "POST", body: data }),
     }),
