@@ -5,21 +5,21 @@ import Link from "next/link";
 
 export default function HeroSection() {
   return (
-    <section className="relative w-full h-[85vh] flex items-center">
-      <div className="relative w-full h-full">
-        <Image
-          src={Hero}
-          alt="Modern living room setup"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 flex items-center justify-center sm:justify-end p-4 sm:p-10">
-          <div className="bg-[#FFF3E3] p-6 sm:p-8 md:p-12 w-full max-w-lg sm:max-w-md lg:max-w-lg">
+    <section className="relative w-full h-[85vh]  flex items-center">
+      <Image
+        src={Hero}
+        alt="Modern living room setup"
+        fill
+        className="object-cover"
+        priority
+      />
+      <div className="relative container mx-auto w-full h-full">
+        <div className="absolute inset-0 flex items-center justify-center sm:justify-end sm:p-10">
+          <div className="bg-[#FFF3E3] p-10 sm:p-8 md:p-12 w-full max-w-lg sm:max-w-md lg:max-w-lg">
             <p className="text-xs sm:text-sm text-gray-600 uppercase font-semibold">
               New Arrival
             </p>
-            <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-[#B88E2F]">
+            <h1 className="text-2xl py-7 sm:text-3xl md:text-5xl font-bold text-[#B88E2F]">
               Discover Our New Collection
             </h1>
             <p className="text-gray-600 mt-2 text-sm sm:text-base">

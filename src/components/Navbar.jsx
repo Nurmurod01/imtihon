@@ -42,8 +42,8 @@ export default function Navbar() {
   };
 
   return (
-    <div className="relative">
-      <div className="mx-4 sm:mx-10 flex h-16 sm:h-24 items-center justify-between px-2 sm:px-4">
+    <div className="relative mx-auto container">
+      <div className="mx-4  sm:mx-10 flex h-16 sm:h-24 items-center justify-between px-2 sm:px-4">
         <Link href="/" className="flex items-center space-x-2">
           <Image
             src={Logo || "/placeholder.svg"}
@@ -66,14 +66,6 @@ export default function Navbar() {
           >
             Shop
           </Link>
-          {isAuthenticated && (
-            <Link
-              href="/order"
-              className="font-medium hover:text-gray-600 transition-colors"
-            >
-              My Orders
-            </Link>
-          )}
           <Link
             href="/about"
             className="font-medium hover:text-gray-600 transition-colors"
@@ -88,7 +80,7 @@ export default function Navbar() {
             onClick={() => router.push("/search")}
             className="hidden sm:inline-flex"
           >
-            <Search className="w-5 h-5 sm:w-6 sm:h-6" />
+            <Search className="w-10 h-10 sm:w-6 sm:h-6" />
           </Button>
           {isAuthenticated ? (
             <>
@@ -96,8 +88,9 @@ export default function Navbar() {
                 variant="ghost"
                 size="icon"
                 className="hidden sm:inline-flex"
+                onClick={() => router.push("/profile")}
               >
-                <User className="w-5 h-5 sm:w-6 sm:h-6" />
+                <User className="w-10 h-10 sm:w-6 sm:h-6" />
               </Button>
               <Button
                 variant="ghost"
@@ -105,7 +98,7 @@ export default function Navbar() {
                 onClick={() => router.push("/wishlist")}
                 className="hidden relative sm:inline-flex"
               >
-                <Heart className="w-5 h-5 sm:w-6 sm:h-6" />
+                <Heart className="w-10 h-10 sm:w-6 sm:h-6" />
                 {wishlist.items.length > 0 && (
                   <span className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">
                     {wishlist.items.length}
@@ -118,7 +111,7 @@ export default function Navbar() {
                 onClick={() => router.push("/cart")}
                 className="hidden sm:inline-flex"
               >
-                <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6" />
+                <ShoppingCart className="w-10 h-10 sm:w-6 sm:h-6" />
               </Button>
               <Button
                 variant="ghost"
@@ -126,7 +119,7 @@ export default function Navbar() {
                 onClick={handleLogout}
                 className="hidden sm:inline-flex"
               >
-                <LogOut className="w-5 h-5 sm:w-6 sm:h-6" />
+                <LogOut className="w-10 h-10 sm:w-6 sm:h-6" />
               </Button>
             </>
           ) : (
@@ -136,7 +129,7 @@ export default function Navbar() {
               onClick={() => router.push("/auth/login")}
               className="hidden sm:inline-flex"
             >
-              <LogIn className="w-5 h-5 sm:w-6 sm:h-6" />
+              <LogIn className="w-10 h-10 sm:w-6 sm:h-6" />
             </Button>
           )}
           <Button
@@ -179,12 +172,16 @@ export default function Navbar() {
                 toggleMenu();
               }}
             >
-              <Search className="w-5 h-5" />
+              <Search className="w-10 h-10" />
             </Button>
             {isAuthenticated ? (
               <>
-                <Button variant="ghost" size="icon">
-                  <User className="w-5 h-5" />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => router.push("/profile")}
+                >
+                  <User className="w-10 h-10" />
                 </Button>
                 <Button
                   variant="ghost"
@@ -194,7 +191,7 @@ export default function Navbar() {
                     toggleMenu();
                   }}
                 >
-                  <Heart className="w-5 h-5" />
+                  <Heart className="w-10 h-10" />
                 </Button>
                 <Button
                   variant="ghost"
@@ -204,7 +201,7 @@ export default function Navbar() {
                     toggleMenu();
                   }}
                 >
-                  <ShoppingCart className="w-5 h-5" />
+                  <ShoppingCart className="w-10 h-10" />
                 </Button>
                 <Button
                   variant="ghost"
@@ -214,7 +211,7 @@ export default function Navbar() {
                     toggleMenu();
                   }}
                 >
-                  <LogOut className="w-5 h-5" />
+                  <LogOut className="w-10 h-10" />
                 </Button>
               </>
             ) : (
@@ -226,7 +223,7 @@ export default function Navbar() {
                   toggleMenu();
                 }}
               >
-                <LogIn className="w-5 h-5" />
+                <LogIn className="w-10 h-10" />
               </Button>
             )}
           </nav>

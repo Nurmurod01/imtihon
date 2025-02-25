@@ -19,24 +19,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { Loading } from "./Loading";
 
 export default function Cart() {
-  const [userid, setUserid] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("Credit card");
 
   const router = useRouter();
+  const data = useSelector((state) => state.auth);
+  const userid = data?.user?.id;
 
-  useEffect(() => {
-    const storedUserId = localStorage.getItem("userId");
-    if (storedUserId) {
-      setUserid(storedUserId);
-    }
-  }, []);
+  const { data: cartItems = [], isLoading } = useGetCartItemsQuery(userid);
 
-  const { data: cartItems = [], isLoading } = useGetCartItemsQuery(userid, {
-    skip: !userid,
-  });
 
   const [removeCartItem] = useDeleteCartItemMutation();
   const [updateCartItem] = useUpdateCartItemMutation();
@@ -93,7 +88,7 @@ export default function Cart() {
   );
   const formatPrice = (price) => `${price.toFixed(2)} $`;
 
-  if (isLoading) return <p className="text-center">Loading...</p>;
+  if (isLoading) return <Loading />;
 
   if (!cartItems.length) {
     return (
@@ -112,10 +107,8 @@ export default function Cart() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Cart Items */}
         <div className="lg:col-span-2">
           <div className="  overflow-hidden">
-            {/* Header */}
             <div className="bg-[#F9F1E7] grid grid-cols-12 gap-4 p-4 border-b text-sm font-medium">
               <div className="col-span-6">Product</div>
               <div className="col-span-2">Price</div>
@@ -123,7 +116,6 @@ export default function Cart() {
               <div className="col-span-2">Subtotal</div>
             </div>
 
-            {/* Cart Items */}
             {cartItems.map((item) => (
               <div
                 key={item.id}
@@ -184,7 +176,6 @@ export default function Cart() {
           </div>
         </div>
 
-        {/* Cart Totals */}
         <div className="lg:col-span-1">
           <div className="bg-[#F9F1E7]  p-6 space-y-4">
             <h2 className="text-2xl font-bold">Cart Totals</h2>

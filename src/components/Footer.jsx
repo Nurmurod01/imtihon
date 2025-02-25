@@ -6,10 +6,10 @@ import { toast } from "react-toastify";
 
 export default function Footer() {
   return (
-    <footer className="border-t py-12">
-      <div className="px-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="space-y-4  text-center sm:text-start">
+    <footer className="border-t  items-center py-12">
+      <div className="mx-auto container ">
+        <div className="grid  grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="space-y-4 text-center sm:text-start">
             <h3 className="font-semibold text-xl">Funiro.</h3>
             <p className="text-sm text-muted-foreground">
               400 University Drive Suite 200 Coral Gables,

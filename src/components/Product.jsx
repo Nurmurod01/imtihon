@@ -6,16 +6,17 @@ import ProductCard from "./ProductCard";
 import Link from "next/link";
 import { useGetProductsQuery } from "@/lib/service/api";
 import { Loading } from "./Loading";
+import ErrProduct from "./ErrProduct";
 
 export default function ProductsSection({ variant }) {
   const { data: products, isLoading, error } = useGetProductsQuery();
   const latestProducts = products?.slice(variant === "home" ? -8 : -4) || [];
 
   if (isLoading) return <Loading />;
-  if (error) return <p>Error loading products</p>;
+  if (error) return <ErrProduct />;
 
   return (
-    <section className="py-16 sm:py-24" id="products">
+    <section className="py-16 sm:py-24 mx-auto container" id="products">
       <div className="px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl sm:text-5xl font-bold text-center mb-8 sm:mb-12">
           {variant === "home" ? "Our Products" : "Related Products"}

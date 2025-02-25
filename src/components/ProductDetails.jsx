@@ -9,12 +9,15 @@ import {
 } from "@/lib/service/api";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useSelector } from "react-redux";
 
 export default function ProductDetails({ product }) {
   const [count, setCount] = useState(1);
+  const data = useSelector((state) => state.auth);
+  const isAuthenticated = data?.isAuthenticated || false;
+  const userId = data?.user.id || false;
   // const [activeSize, setActiveSize] = useState("L");
   // const [activeColor, setActiveColor] = useState("bg-purple-500");
-  const userId = localStorage.getItem("userId");
   const { data: category } = useGetOneCategoryQuery(product.categoryId);
   const [addCartItem, { isLoading }] = useAddCartItemMutation();
 
@@ -98,12 +101,12 @@ export default function ProductDetails({ product }) {
             </div>
             <Button
               onClick={handleAddToCart}
-              disabled={isLoading || !userId}
+              disabled={isLoading || !isAuthenticated}
               className="w-full sm:w-auto flex-1 bg-white text-black border text-base sm:text-lg py-3 sm:py-5 hover:bg-gray-100 rounded-lg sm:rounded-xl"
             >
               {isLoading
                 ? "Adding..."
-                : userId
+                : isAuthenticated
                 ? "Add To Cart"
                 : "Login to Buy"}
             </Button>

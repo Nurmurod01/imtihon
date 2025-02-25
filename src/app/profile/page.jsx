@@ -5,19 +5,20 @@ import { Card, CardContent } from "@/components/ui/card";
 
 import { useToast } from "@/hooks/use-toast";
 import { useGetOneOrdersQuery, useGetOneUsersQuery } from "@/lib/service/api";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-// import MyOrders from "../order/page";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useSelector } from "react-redux";
 
 export default function ProfilePage() {
-  const [userId, setUserId] = useState(null);
   const { toast } = useToast();
-
-  useEffect(() => {
-    const storedUserId = localStorage.getItem("userId");
-    if (storedUserId) {
-      setUserId(storedUserId);
-    }
-  }, []);
+  const data = useSelector((state) => state.auth);
+  const userId = data?.user?.id;
 
   const {
     data: user,
@@ -30,7 +31,6 @@ export default function ProfilePage() {
     isLoading: loading,
     error: xatolik,
   } = useGetOneOrdersQuery(userId);
-console.log(order);
 
   useEffect(() => {
     if (error) {
@@ -81,7 +81,7 @@ console.log(order);
           </Card>
 
           <h2 className="text-2xl text-center font-bold mt-8 mb-4 text-[#B88E2F]">
-           My Orders
+            My Orders
           </h2>
 
           <Table className="border">

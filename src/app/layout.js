@@ -21,7 +21,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${poppins.variable} antialiased flex flex-col min-h-screen`}
+        className={`${poppins.variable} antialiased min-h-screen`}
       >
         <StoreProvider>
           <ToastContainer />

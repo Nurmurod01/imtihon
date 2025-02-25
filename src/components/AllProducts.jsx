@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ProductCard from "./ProductCard";
 import { useGetProductsQuery } from "@/lib/service/api";
+import ErrProduct from "./ErrProduct";
 
 export default function AllProducts() {
   const { data: products, isLoading, error } = useGetProductsQuery();
@@ -14,11 +15,7 @@ export default function AllProducts() {
   }
 
   if (error) {
-    return (
-      <div className="text-center py-10 text-red-500">
-        Error: {error.message}
-      </div>
-    );
+    return <ErrProduct />;
   }
 
   if (!products || products.length === 0) {

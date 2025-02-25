@@ -12,7 +12,6 @@ export function useAuth() {
     if (token) {
       try {
         const decoded = jwtDecode(token);
-        console.log(decoded, decoded.id);
         localStorage.setItem("userId", decoded.id);
         setUser(decoded?.id);
         setIsLoggedIn(true);
